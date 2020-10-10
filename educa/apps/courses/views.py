@@ -5,7 +5,8 @@ from django.views.generic.list import ListView
 from .models import Course
 
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreteView, UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin 
 
 # QuerySet : lsit of object for some model | order / filter / read date from DataBase
 class OwnerMixin(object):
@@ -24,23 +25,33 @@ class OwnerCourseMixin(OwnerMixin):
     success_url = reverse_lazy('manage_course_list')
 
 class OwnerCourseEditMixin(OwnerCourseMixin, OwnerEditMixin):
-    template_name = 'template/manage/form.html'
+    template_name = 'manage/form.html'
 
 class ManageCourseListView(OwnerCourseMixin, ListView):
-    template_name = 'courses/manage/course/list.html'
+    template_name = 'manage/list.html'
+    permission_required = 'courses.view_course'
 
-class CourseCreateView(ownerCourseEditMIxin, CreateView):
-    pass
+class CourseCreateView(OwnerCourseEditMixin, CreateView):
+    permission_required = 'courses.view_course'
 
 class CourseUpdateView(OwnerCourseEditMixin, UpdateView):
-    pass
+    permission_required = 'courses.view_course'
+
 class CourseDeleteView(OwnerCourseMixin, DeleteView):
-    template_name = 'courses/mange/delete.html'
+    template_name = 'manage/delete.html'
+    permission_required = 'courses.view_course'
+
+class OwnerCourseMixin(OwnerMixin, 
+                        LoginRequiredMixin, 
+                        PermissionRequiredMixin):
+    model = Course
+    fields = ['subject', 'title', 'slug' , 'overview' ]
+    success_url = reverse_lazy('manage_course_list')
 
 class ManageCourseListView(ListView):
     model = Course
-    template_name = '/template/manage/list.html'
+    template_name = 'manage/list.html'
     
     def get_queryset(self):
-        qs = super.get_queryset()
-        reutnrn qs.filter(owner=self.request.user)
+        qs = super().get_queryset()
+        return qs.filter(owner=self.request.user)
