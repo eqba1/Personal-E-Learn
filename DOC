@@ -1,29 +1,67 @@
 # apps/course/view
 
-TemplateResponseMixin : This mixin takes charge of rendering templates
-and returning an HTTP response. It requires a template_name attribute
-that indicates the template to be rendered and provides the render_to_
-response() method to pass it a context and render the template.
+CourseModuleUpdateView
+[
+        TemplateResponseMixin : This mixin takes charge of rendering templates
+        and returning an HTTP response. It requires a template_name attribute
+        that indicates the template to be rendered and provides the render_to_
+        response() method to pass it a context and render the template.
 
-View : The basic class-based view provided by Django.
+        View : The basic class-based view provided by Django.
 
-get_formset() : You define this method to avoid repeating the code to build
-the formset. You create a ModuleFormSet object for the given Course object
-with optional data.
+        get_formset() : You define this method to avoid repeating the code to build
+        the formset. You create a ModuleFormSet object for the given Course object
+        with optional data.
 
-dispatch() : This method is provided by the View class. It takes an HTTP
-request and its parameters and attempts to delegate to a lowercase method
-that matches the HTTP method used. A GET request is delegated to the get()
-method and a POST request to post() , respectively. In this method, you use
-the get_object_or_404() shortcut function to get the Course object for the
-given id parameter that belongs to the current user. You include this code in
-the dispatch() method because you need to retrieve the course for both GET
-and POST requests. You save it into the course attribute of the view to make
-it accessible to other methods.
+        dispatch() : This method is provided by the View class. It takes an HTTP
+        request and its parameters and attempts to delegate to a lowercase method
+        that matches the HTTP method used. A GET request is delegated to the get()
+        method and a POST request to post() , respectively. In this method, you use
+        the get_object_or_404() shortcut function to get the Course object for the
+        given id parameter that belongs to the current user. You include this code in
+        the dispatch() method because you need to retrieve the course for both GET
+        and POST requests. You save it into the course attribute of the view to make
+        it accessible to other methods.
 
-get() : Executed for GET requests. You build an empty ModuleFormSet
-formset and render it to the template together with the current
-Course object using the render_to_response() method provided by
-TemplateResponseMixin .
+        get() : Executed for GET requests. You build an empty ModuleFormSet
+        formset and render it to the template together with the current
+        Course object using the render_to_response() method provided by
+        TemplateResponseMixin .
 
-post() : Executed for POST requests.
+        post() : Executed for POST requests.
+]
+
+ContentCreateUpdateView [
+
+        get_model() : Here, you check that the given model name is one of the four
+        content models: Text , Video , Image , or File . Then, you use Django's apps
+        module to obtain the actual class for the given model name. If the given
+        model name is not one of the valid ones, you return None .
+
+        get_form() : You build a dynamic form using the modelform_factory()
+        function of the form's framework. Since you are going to build a form for
+        the Text , Video , Image , and File models, you use the exclude parameter
+        to specify the common fields to exclude from the form and let all other
+        attributes be included automatically. By doing so, you don't have to know
+        which fields to include depending on the model.
+
+        dispatch() : It receives the following URL parameters and stores the
+        corresponding module, model, and content object as class attributes:
+
+            ° module_id : The ID for the module that the content is/will be associated with.
+            ° model_name : The model name of the content to create/update.
+            ° id : The ID of the object that is being updated. It's None to create new objects.
+
+        get() : Executed when a GET request is received. You build the model
+        form for the Text , Video , Image , or File instance that is being updated.
+        Otherwise, you pass no instance to create a new object, since self.obj
+        is None if no ID is provided.
+        
+        post() : Executed when a POST request is received. You build the model
+        form, passing any submitted data and files to it. Then, you validate it. If the
+        form is valid, you create a new object and assign request.user as its owner
+        before saving it to the database. You check for the id parameter. If no ID is
+        provided, you know the user is creating a new object instead of updating an
+        existing one. If this is a new object, you create a Content object for the given
+        module and associate the new content with it.
+]
