@@ -1,0 +1,29 @@
+# apps/course/view
+
+TemplateResponseMixin : This mixin takes charge of rendering templates
+and returning an HTTP response. It requires a template_name attribute
+that indicates the template to be rendered and provides the render_to_
+response() method to pass it a context and render the template.
+
+View : The basic class-based view provided by Django.
+
+get_formset() : You define this method to avoid repeating the code to build
+the formset. You create a ModuleFormSet object for the given Course object
+with optional data.
+
+dispatch() : This method is provided by the View class. It takes an HTTP
+request and its parameters and attempts to delegate to a lowercase method
+that matches the HTTP method used. A GET request is delegated to the get()
+method and a POST request to post() , respectively. In this method, you use
+the get_object_or_404() shortcut function to get the Course object for the
+given id parameter that belongs to the current user. You include this code in
+the dispatch() method because you need to retrieve the course for both GET
+and POST requests. You save it into the course attribute of the view to make
+it accessible to other methods.
+
+get() : Executed for GET requests. You build an empty ModuleFormSet
+formset and render it to the template together with the current
+Course object using the render_to_response() method provided by
+TemplateResponseMixin .
+
+post() : Executed for POST requests.
