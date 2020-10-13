@@ -17,7 +17,28 @@ from django.apps import apps
 from .models import Module, Content
 
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
+(
+django.db.models import concurrent
+from .models import Subject
 
+class CourseListView(TemplateResponseMixin, View):
+    model = Course
+    template_name = 'course/list.html'
+
+    def get(self, request, subject=None):
+        subject = Subject.objects.annotate(
+                        total_courses=count('courses')
+        )
+        sourses = Course.objects.annotate(
+            total_modules=Count('modules')
+        )
+        if subject:
+            subject = get_object_or_404(Subject, slug=subject)
+            courses = courses.filter(subject=subject)
+        return self.render_to_response({'subjects': subjects,
+                                        'subject': subject,
+                                        'courses': courses})
+                                    
 class ContentOrderView(CsrfExemptMixin,
                         JsonRequestResponseMixin,
                         View):
