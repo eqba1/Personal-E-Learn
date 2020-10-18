@@ -17,19 +17,25 @@ from django.apps import apps
 from .models import Module, Content
 
 from braces.views import CsrfExemptMixin, JsonRequestResponseMixin
-(
-django.db.models import concurrent
+
+from django.db.models import Count
 from .models import Subject
+
+from django.views.generic.detail import DetailView
+
+class CourseDetailView(DetailView):
+    model = Course
+    template_name = 'course/detail.html'
 
 class CourseListView(TemplateResponseMixin, View):
     model = Course
     template_name = 'course/list.html'
 
     def get(self, request, subject=None):
-        subject = Subject.objects.annotate(
-                        total_courses=count('courses')
+        subjects = Subject.objects.annotate(
+                        total_courses=Count('courses')
         )
-        sourses = Course.objects.annotate(
+        courses = Course.objects.annotate(
             total_modules=Count('modules')
         )
         if subject:
