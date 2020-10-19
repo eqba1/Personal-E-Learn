@@ -6,6 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from .fields import OrderField
 # Create your models here.
 
+
+
 class Subject(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
@@ -24,7 +26,10 @@ class Course(models.Model):
     subject = models.ForeignKey(Subject,
                             related_name='courses',
                             on_delete=models.CASCADE)
-
+    studets = models.ManyToManyField(User,
+                                related_name='courses_joined',
+                                blank=True)
+                                
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True)
     overview = models.TextField()
