@@ -15,6 +15,11 @@ import os
 from django.core.exceptions import ImproperlyConfigured
 from educa.apps.core.versioning import get_git_changeset_timestamp
 import json
+from django.urls import reverse_lazy
+
+# redirect studnets to this URL when tyhy log in to the platform
+LOGIN_REDIRECT_URL = reverse_lazy('student_course_list')
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(
         os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -54,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'educa.apps.students',
+    'embed_video',
 ]
 
 MIDDLEWARE = [
@@ -145,6 +151,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 timestamp = get_git_changeset_timestamp(BASE_DIR)
 STATIC_URL = f'/static/{timestamp}/'
+MEDIA_URL = '/media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
