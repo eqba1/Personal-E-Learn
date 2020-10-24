@@ -30,12 +30,10 @@ class StudentCourseDetailView(DetailView):
         if 'module_id' in self.kwargs:
             # get course object
             context['module'] = course.modules.get(
-                                    id=self.kwargs['module_id']
-            )
+                                    id=self.kwargs['module_id'] )
         else:
             context['module'] = course.modules.all()[0]
         return context
-
 
 
 class StudentCourseListView(LoginRequiredMixin, ListView):
