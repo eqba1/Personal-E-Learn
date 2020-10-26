@@ -30,6 +30,7 @@ urlpatterns = [
     path('course/', include('educa.apps.courses.urls')),
     path('', CourseListView.as_view(), name='course_list'),
     path('students/', include('educa.apps.students.urls')),
+    path('api/', include('educa.apps.courses.api.urls', namespace='api')),
 ]
 
 if settings.DEBUG:

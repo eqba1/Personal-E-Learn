@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     #requeironment
     'embed_video',
     'memcache_status',
+    'rest_framework',
 ]
 
 
