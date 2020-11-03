@@ -59,11 +59,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'educa.apps.students',
-
+    'educa.apps.chat',
     #requeironment
     'embed_video',
     'memcache_status',
     'rest_framework',
+
 ]
 
 
